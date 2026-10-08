@@ -44,7 +44,6 @@ body {
            calc(28px + var(--safe-area-inset-bottom, 0px));
 }
 
-/* ---------------- header ---------------- */
 .header {
   display: flex;
   align-items: center;
@@ -64,7 +63,6 @@ body {
   border-radius: 999px;
 }
 
-/* ---------------- hero ---------------- */
 .hero {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -140,7 +138,6 @@ body {
 
 .legend { font-size: 12px; color: var(--muted); }
 
-/* ---------------- button ---------------- */
 .btn {
   border: 0;
   border-radius: var(--r-item);
@@ -159,7 +156,6 @@ body {
 .btn.wide { display: block; width: 100%; margin-bottom: 14px; }
 .btn:disabled { opacity: .55; cursor: default; }
 
-/* ---------------- panels ---------------- */
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -180,7 +176,6 @@ body {
 .ph-label { font-size: 13.5px; font-weight: 650; }
 .count { font-size: 12px; color: var(--muted); }
 
-/* ---------------- rows ---------------- */
 .rows { padding: 4px 0; }
 
 .row {
@@ -205,7 +200,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------------- copyright ---------------- */
 .notice {
   font-size: 12.5px;
   line-height: 1.65;
@@ -221,7 +215,6 @@ body {
   padding: 2px 0 4px;
 }
 
-/* ---------------- toast ---------------- */
 .toast {
   position: fixed;
   left: 50%;

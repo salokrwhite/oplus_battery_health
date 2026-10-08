@@ -1,12 +1,3 @@
-/* OPPO Battery Health — WebUI
- *
- * 两种取数方式:
- *   1. KernelSU / APatch 内置 WebUI: 走 ksu.exec 桥直接执行模块脚本
- *   2. 普通浏览器 (Magisk 用户): 走 http://127.0.0.1:<port>/cgi-bin/read
- *
- * 注意: 传给 ksu.exec 的 shell 命令里不能出现 exit，否则会终止常驻 shell。
- */
-
 const MOD_ROOT = '/data/adb/modules/oppo_battery_health';
 const SCRIPT = MOD_ROOT + '/system/bin/batteryhealth';
 const CGI = './cgi-bin/read';
@@ -15,8 +6,6 @@ const RESULT_CODES = {
   t03010302: '容量偏低/不通过',
   t2: '不支持或数据缺失',
 };
-
-/* ---------------------------------------------------------------- bridge */
 
 function exec(cmd, timeout = 30000) {
   return new Promise((resolve) => {
@@ -63,8 +52,6 @@ async function sh(cmd, timeout) {
     throw new Error((r.stderr || ('exit ' + r.errno)).trim());
   return r.stdout;
 }
-
-/* ---------------------------------------------------------------- utils */
 
 function $(id) { return document.getElementById(id); }
 
@@ -123,8 +110,6 @@ function levelClass(level) {
   return 'lv-none';
 }
 
-/* ---------------------------------------------------------------- read */
-
 async function readAll() {
   const btn = $('readBtn');
   btn.disabled = true;
@@ -144,7 +129,6 @@ async function readAll() {
   }
 }
 
-/* 优先用 WebUI 桥；没有桥时退回本地 httpd 的 CGI */
 async function readRaw() {
   if (bridge()) {
     return await sh('sh ' + SCRIPT + ' --kv --extra', 40000);
@@ -159,7 +143,6 @@ function renderAll(d) {
   const pct = ok ? Number(d.percent) : 0;
   const level = ok ? d.level : '未读取';
 
-  /* hero - raw data, level and legend */
   $('pct').textContent = ok ? d.percent : '--';
 
   const chip = $('levelChip');
@@ -185,7 +168,6 @@ function renderAll(d) {
 
   $('hero').className = 'hero ' + levelClass(level);
 
-  /* core - data fields only */
   const core = [
     row('原始数据', ok ? d.percent + ' %' : '—'),
     row('电池健康', ok ? d.level : '—'),
@@ -206,7 +188,6 @@ function renderAll(d) {
   $('coreCount').textContent = ok ? '已读取' : '—';
   $('device').textContent = d.model || 'unknown';
 
-  /* live - extra telemetry */
   const live = [
     row('当前电量', d.soc ? d.soc + ' %' : '—'),
     row('电压', d.voltage_mv ? d.voltage_mv + ' mV' : '—'),
@@ -224,7 +205,5 @@ function renderAll(d) {
       const model = (await sh('getprop ro.product.model')).trim();
       if (model) $('device').textContent = model;
     }
-  } catch (e) { /* ignore */ }
-  /* No reading here on purpose: the page stays idle until the user presses
-     读取电池健康. */
+  } catch (e) {  }
 })();

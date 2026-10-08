@@ -186,8 +186,9 @@ su -c "batteryhealth --kv --extra"    # adds telemetry that is NOT part of 03010
   ships `action.sh`. Tapping it starts the local page and opens it in the
   browser.
 * **KernelSU / APatch** — open the module and tap *WebUI*.
-* **Magisk** — no built-in WebUI host, so `service.sh` starts busybox `httpd`
-  on `127.0.0.1:8899` at boot; open `http://127.0.0.1:8899/` in any browser.
+* **Magisk** — no built-in WebUI host, so `service.sh` starts the module's own
+  built-in HTTP server (no busybox dependency) on `127.0.0.1:8899` at boot;
+  open `http://127.0.0.1:8899/` in any browser.
   Disable with `su -c "touch /data/adb/modules/oppo_battery_health/disable_http"`.
   A third-party host such as KsuWebUIStandalone or MMRL also works.
 
