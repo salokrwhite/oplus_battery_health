@@ -1,23 +1,4 @@
 #!/system/bin/sh
-# ==========================================================================
-#  030103  Battery health  -  CLI dispatcher
-#
-#  All logic (HAL/HIDL FCC read via app_process+chgfcc.dex, design capacity,
-#  flag, threshold table, percent/grade arithmetic, kv/json/human output,
-#  and the local HTTP server) now lives in the compiled battcore.* binary
-#  next to this script - see src/battcore.c. This file only exists to pick
-#  the right ABI and exec it, so every caller (service.sh, action.sh,
-#  uninstall.sh, the WebUI bridge) keeps working unchanged.
-#
-#  Usage (unchanged):
-#      batteryhealth                 human readable
-#      batteryhealth --kv            key=value (WebUI)
-#      batteryhealth --json          single line JSON
-#      batteryhealth --kv --extra    add non-030103 telemetry
-#      batteryhealth --serve         start the local web page
-#      batteryhealth --serve-stop    stop it
-#      batteryhealth --serve-port    print the port
-# ==========================================================================
 
 SELFDIR=${0%/*}
 
