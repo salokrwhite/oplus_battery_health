@@ -68,6 +68,16 @@ async function sh(cmd, timeout) {
 
 function $(id) { return document.getElementById(id); }
 
+function nextPaint() {
+  return new Promise((resolve) => {
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    } else {
+      setTimeout(resolve, 50);
+    }
+  });
+}
+
 let toastTimer = null;
 function toast(msg, isErr) {
   const el = $('toast');
@@ -120,6 +130,7 @@ async function readAll() {
   btn.disabled = true;
   btn.textContent = '读取中…';
   try {
+    await nextPaint();
     const out = await readRaw();
     const d = parseKV(out);
     renderAll(d);

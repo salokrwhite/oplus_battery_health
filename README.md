@@ -191,6 +191,10 @@ su -c "batteryhealth --kv --extra"    # adds telemetry that is NOT part of 03010
   Disable with `su -c "touch /data/adb/modules/oppo_battery_health/disable_http"`.
   A third-party host such as KsuWebUIStandalone or MMRL also works.
 
+KernelSU may run the WebUI shell bridge on the WebView main thread. The page
+yields one paint before invoking it, so the read button can visibly change to
+读取中 before the command blocks the UI.
+
 The page's **核心参数** block keeps the health fields without per-row hint
 text. A separate **附加信息** section contains SOC, voltage, current,
 temperature, charge state and cycle count. That telemetry never influences the

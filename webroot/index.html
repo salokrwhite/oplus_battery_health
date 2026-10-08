@@ -7,7 +7,7 @@
   <meta name="color-scheme" content="light dark" />
   <link rel="stylesheet" href="/internal/insets.css" />
   <title>电池健康</title>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=3.4.0" />
 </head>
 
 <body>
@@ -27,20 +27,9 @@
       </div>
       <div class="bar"><i id="bar"></i></div>
       <div class="legend" id="legend"></div>
-      <div class="ref" id="ref"></div>
     </section>
 
     <button id="readBtn" class="btn dark wide" onclick="readAll()">读取电池健康</button>
-
-    <div class="panel auto-panel">
-      <div class="auto-row">
-        <div class="auto-main">
-          <div class="auto-name">自动刷新</div>
-          <div class="auto-desc" id="autoDesc">每 15 秒重新读取一次</div>
-        </div>
-        <span class="switch" id="autoSwitch" onclick="autoToggle()"></span>
-      </div>
-    </div>
 
     <section class="panel">
       <div class="panel-head">
@@ -52,32 +41,22 @@
 
     <section class="panel">
       <div class="panel-head">
-        <span class="ph-label">附加信息（非 030103）</span>
+        <span class="ph-label">附加信息</span>
       </div>
       <div class="rows" id="liveRows"></div>
     </section>
 
-    <section class="panel">
-      <div class="panel-head clickable" onclick="toggleRaw()">
-        <span class="ph-label">原始节点</span>
-        <span class="sec-arrow" id="rawArrow"></span>
-      </div>
-      <div class="rows" id="rawRows" style="display:none"></div>
-    </section>
-
-    <p class="note" id="note">
-      严格按官方流程取值：FCC 来自 <code>/sys/class/oplus_chg/battery/battery_fcc</code>，
-      设计容量来自 <code>power_profile.xml</code> 的 <code>battery.capacity</code>，
-      有效标志来自 <code>/proc/charger/integrate_gauge_fcc_flag</code>。
-      健康度 = FCC ÷ 设计容量 × 100；优 ≥ good，良 ≥ excellent，否则为差。
-      任一节点缺失即判为「不支持」，不做任何替代取值。
-      页面显示原始数据（两位小数）；等级按未舍入的比值判定，与官方一致。
+    <p class="notice">
+      本模块尽可能复刻售后工具读取电池健康的相关流程，结果具有较高的参考价值。
+      受设备批次、系统版本及售后工具版本差异影响，最终请以售后工具检测结果为准。
     </p>
+
+    <footer class="copyright">© 小白科学院</footer>
 
     <div id="toast" class="toast"></div>
   </main>
 
-  <script src="./app.js"></script>
+  <script src="./app.js?v=3.4.0"></script>
 </body>
 
 </html>

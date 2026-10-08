@@ -1,6 +1,6 @@
 id=oppo_battery_health
 name=OPPO Battery Health (SOH)
-version=v3.3.9
-versionCode=339
+version=v3.4.0
+versionCode=340
 author=Codex
 description=Reads OPPO / realme / OnePlus battery health through the charger HAL, framework design capacity, matching arithmetic, grade and legend. The action button only opens the page; reading starts only when you tap the button. No result files and no notifications.
