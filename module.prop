@@ -1,0 +1,6 @@
+id=oppo_battery_health
+name=OPPO Battery Health (SOH)
+version=v3.2.1
+versionCode=321
+author=Codex
+description=Reads battery health exactly like the ColorOS / O+ Support diagnostic item 030103: the charger HAL is called through app_process (AIDL then HIDL, exactly the official sequence), design capacity from the framework PowerProfile value, same arithmetic, grade and legend. Action button only opens the page; the page does the reading. No result files, no notifications.

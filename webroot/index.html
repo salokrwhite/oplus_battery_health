@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="stylesheet" href="/internal/insets.css" />
+  <title>电池健康</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <main class="page">
+    <header class="header">
+      <h1>电池健康</h1>
+      <span id="device" class="badge">…</span>
+    </header>
+
+    <section class="hero" id="hero">
+      <div class="hero-main">
+        <div class="pct"><span id="pct">--</span><em>%</em></div>
+        <div class="hero-side">
+          <span class="chip" id="levelChip">未读取</span>
+          <div class="sub" id="sub">点击下方按钮开始读取</div>
+        </div>
+      </div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="legend" id="legend"></div>
+      <div class="ref" id="ref"></div>
+    </section>
+
+    <button id="readBtn" class="btn dark wide" onclick="readAll()">读取电池健康</button>
+
+    <div class="panel auto-panel">
+      <div class="auto-row">
+        <div class="auto-main">
+          <div class="auto-name">自动刷新</div>
+          <div class="auto-desc" id="autoDesc">每 15 秒重新读取一次</div>
+        </div>
+        <span class="switch" id="autoSwitch" onclick="autoToggle()"></span>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-label">核心参数</span>
+        <span class="count" id="coreCount">—</span>
+      </div>
+      <div class="rows" id="coreRows"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="ph-label">附加信息（非 030103）</span>
+      </div>
+      <div class="rows" id="liveRows"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head clickable" onclick="toggleRaw()">
+        <span class="ph-label">原始节点</span>
+        <span class="sec-arrow" id="rawArrow"></span>
+      </div>
+      <div class="rows" id="rawRows" style="display:none"></div>
+    </section>
+
+    <p class="note" id="note">
+      严格按官方流程取值：FCC 来自 <code>/sys/class/oplus_chg/battery/battery_fcc</code>，
+      设计容量来自 <code>power_profile.xml</code> 的 <code>battery.capacity</code>，
+      有效标志来自 <code>/proc/charger/integrate_gauge_fcc_flag</code>。
+      健康度 = FCC ÷ 设计容量 × 100；优 ≥ good，良 ≥ excellent，否则为差。
+      任一节点缺失即判为「不支持」，不做任何替代取值。
+      页面显示原始数据（两位小数）；等级按未舍入的比值判定，与官方一致。
+    </p>
+
+    <div id="toast" class="toast"></div>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+
+</html>

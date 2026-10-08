@@ -1,0 +1,21 @@
+#!/system/bin/sh
+# CGI endpoint used when the page is opened in a normal browser (Magisk users
+# without a WebUI host). Returns the same key=value payload as
+#   batteryhealth --kv
+# It only ever runs that one fixed script - no user input is passed through.
+
+MODDIR=/data/adb/modules/oppo_battery_health
+
+printf 'Content-Type: text/plain; charset=utf-8\r\n'
+printf 'Cache-Control: no-store\r\n'
+printf 'Access-Control-Allow-Origin: *\r\n'
+printf '\r\n'
+
+if [ -x "$MODDIR/system/bin/batteryhealth" ]; then
+    sh "$MODDIR/system/bin/batteryhealth" --kv --extra
+else
+    echo "ok=0"
+    echo "error=module script not found"
+fi
+
+exit 0
