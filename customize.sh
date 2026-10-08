@@ -8,7 +8,7 @@ LATESTARTSERVICE=true
 
 ui_print " "
 ui_print "  OPPO Battery Health (SOH)"
-ui_print "  reads battery health the same way ColorOS / O+ Support does"
+ui_print "  reads battery health and capacity state"
 ui_print "  KernelSU / APatch users get a WebUI to read it on demand"
 ui_print " "
 
@@ -27,7 +27,7 @@ set_perm_recursive "$MODPATH/webroot" 0 0 0755 0644
 set_perm_recursive "$MODPATH/webroot/cgi-bin" 0 0 0755 0755
 set_perm "$MODPATH/webroot/cgi-bin/read" 0 0 0755
 
-# DEX used by app_process to run the official charger-HAL call
+# DEX used by app_process to call the charger HAL
 set_perm_recursive "$MODPATH/bin" 0 0 0755 0644
 
 ui_print "- installed."

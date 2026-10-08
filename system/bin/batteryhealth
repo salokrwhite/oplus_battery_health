@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # ==========================================================================
-#  030103  Battery health  —  strict reproduction of the official flow
+#  030103  Battery health  -  diagnostic flow reproduction
 #
 #  Nothing here is invented. Every rule below was recovered from the shipped
 #  binaries and is quoted with its source.
@@ -28,7 +28,7 @@
 #              percent >= excellent -> 良
 #              else                 -> 差
 #
-#  DATA SOURCES  (official paths only, no substitution)
+#  DATA SOURCES  (fixed paths only, no substitution)
 #        fcc    /sys/class/oplus_chg/battery/battery_fcc
 #               OplusChargerHelper.getPsyBatteryFcc()
 #                 -> vendor.oplus.hardware.charger.ICharger/default, trans 29
@@ -39,8 +39,8 @@
 #               getIntegrateGaugeFccFlag(): the HAL method does not exist in
 #               the shipped HAL, so the code falls back to this node
 #
-#  If any of the three is missing the result is UNSUPPORTED - exactly what the
-#  official tool does. There is no compatibility fallback.
+#  If any of the three is missing the result is UNSUPPORTED. There is no
+#  compatibility fallback.
 #
 #  Usage:
 #      batteryhealth                 human readable
@@ -157,8 +157,8 @@ if [ "$ACTION" = "1" ]; then
         case "$U" in ''|*[!0-9]*) U=0 ;; esac
         am start --user "$U" -a android.intent.action.VIEW -d "$SERVE_URL" >/dev/null 2>&1
     fi
-    # --action is purely "open the page": no reading here. The page reads by
-    # itself once it loads, and each press of its button reads again.
+    # --action is purely "open the page": no reading here. The page stays idle
+    # until the user presses its read button.
     echo "url=$SERVE_URL"
     exit 0
 fi
@@ -166,7 +166,7 @@ fi
 # ==========================================================================
 #  1. FCC  —  OplusChargerHelper.getPsyBatteryFcc()
 #
-#  Official sequence (decompiled):
+#  Charger HAL sequence (decompiled):
 #
 #      getOplusCharger():
 #          1) AIDL   vendor.oplus.hardware.charger.ICharger/default
@@ -191,7 +191,7 @@ CHG_DEX="$MODDIR/bin/chgfcc.dex"
 HAL_FCC=""
 HAL_VIA=""
 
-# The official sequence is executed by a small DEX launched with app_process,
+# The charger HAL sequence is executed by a small DEX launched with app_process,
 # because a shell cannot reach hwbinder. See src/ChgFcc.java:
 #     AIDL  vendor.oplus.hardware.charger.ICharger/default
 #     HIDL  vendor.oplus.hardware.charger.V1_0.ICharger
@@ -236,7 +236,7 @@ DESIGN_SRC=""
 
 # Primary: the framework's own value. BatteryStatsService builds its
 # PowerProfile exactly like the diagnostic plugin does and prints the result,
-# so this is the very number the official code reads.
+# so this is the same number the diagnostic code reads.
 v=$(dumpsys batterystats 2>/dev/null \
     | grep -m1 'Estimated battery capacity' \
     | grep -o '[0-9][0-9]*' | head -n 1)
@@ -260,7 +260,7 @@ fi
 # ==========================================================================
 #  3. flag  —  getIntegrateGaugeFccFlag()
 #
-#  Official code:
+#  Diagnostic code:
 #      int f = invokeChargeInterface("getIntegrateGaugeFccFlag");
 #      if (f != 1)
 #          return new File("proc/charger/integrate_gauge_fcc_flag").exists() ? 1 : 0;
@@ -286,7 +286,7 @@ case " 20031 20061 19815 19525 " in
     *" $PROJ "*) GOOD=70; EXCELLENT=60 ;;
 esac
 
-# The official detail text renders exactly this legend next to the grade:
+# The detail text renders exactly this legend next to the grade:
 #   resultText+='优：'+good+'-100%，良：'+excellent+'-'+good+'%，差：0-'+excellent+'%'
 LEGEND="优：${GOOD}-100%，良：${EXCELLENT}-${GOOD}%，差：0-${EXCELLENT}%"
 
@@ -354,8 +354,10 @@ if [ "$EXTRA" = "1" ]; then
         grep -m1 "^POWER_SUPPLY_$1=" "$UEV" 2>/dev/null | cut -d= -f2- | tr -d ' \t\r\n'
     }
     SOC=$(uev CAPACITY)
-    VOLT_MV=$(uev VOLTAGE_NOW)
-    CURR_MA=$(uev CURRENT_NOW)
+    VOLT_UV=$(uev VOLTAGE_NOW)
+    VOLT_MV=$(awk -v v="$VOLT_UV" 'BEGIN{ if(v==""){print ""} else printf "%.1f", v/1000 }')
+    CURR_UA=$(uev CURRENT_NOW)
+    CURR_MA=$(awk -v v="$CURR_UA" 'BEGIN{ if(v==""){print ""} else printf "%.2f", v/1000 }')
     TEMP_C=$(awk -v t="$(uev TEMP)" 'BEGIN{ if(t==""){print ""} else printf "%.1f", t/10 }')
     CHG_STATE=$(uev STATUS)
     HEALTH_RAW=$(uev HEALTH)
@@ -392,7 +394,7 @@ ratio_exact=$PCT_EXACT
 model=$(getprop ro.product.model)
 device=$(getprop ro.product.device)
 rom=$(getprop ro.build.version.oplusrom)
-time=$(date +%Y-%m-%dT%H:%M:%S)
+time=$(date '+%Y-%m-%d %H:%M:%S')
 EOF
     [ "$ACTION" = "1" ] && echo "url=$SERVE_URL"
     if [ "$EXTRA" = "1" ]; then
@@ -430,7 +432,7 @@ else
   flag         = ${FLAG}
   thresholds   = good>=${GOOD}, excellent>=${EXCELLENT}   (project ${PROJ:-unknown})
 
-  判级与记录（等级用未舍入值判定，与官方一致）:
+  判级与记录（等级用未舍入值判定）:
     ratio_exact= ${PCT_EXACT:-不可用}
     record_int = ${PCT_INT:-不可用}
 EOF

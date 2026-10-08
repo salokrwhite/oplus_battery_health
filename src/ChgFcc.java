@@ -1,8 +1,7 @@
 /*
  * ChgFcc — reproduces OplusChargerHelper.getPsyBatteryFcc() from a root shell.
  *
- * The official code resolves the charger service and calls the method through
- * reflection, so the same thing is done here with reflection only:
+ * The charger service is resolved and the method is called through reflection:
  *
  *   1) AIDL  vendor.oplus.hardware.charger.ICharger/default
  *            ICharger$Stub.asInterface(ServiceManager.getService(...))

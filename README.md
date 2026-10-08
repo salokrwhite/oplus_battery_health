@@ -149,7 +149,7 @@ $ su -c batteryhealth
   flag         = 1
   thresholds   = good>=80, excellent>=60   (project 19813)
 
-  判级与记录（等级用未舍入值判定，与官方一致）:
+  判级与记录（等级用未舍入值判定）:
     ratio_exact= 76.651884700699995
     record_int = 76
 ```
@@ -168,6 +168,9 @@ Because the grade uses the unrounded value, a ratio such as `59.999 %` shows as
 | `normal` | `t03010301` | phone returned NORMAL |
 | `abnormal` | `t03010302` | percent < 60, phone returned ABNORMAL |
 | `unsupported` | `t2` | flag != 1, or a node is missing |
+
+`item_no` is the phone-side result/error code. It is not the diagnostic item
+number; the item itself is `030103`.
 
 Other modes:
 
@@ -188,9 +191,10 @@ su -c "batteryhealth --kv --extra"    # adds telemetry that is NOT part of 03010
   Disable with `su -c "touch /data/adb/modules/oppo_battery_health/disable_http"`.
   A third-party host such as KsuWebUIStandalone or MMRL also works.
 
-The page shows the official fields plus a clearly separated
-**附加信息（非 030103）** section (SOC, voltage, current, temperature, charge
-state, cycle count). That telemetry never influences the health value.
+The page's **核心参数** block keeps the health fields without per-row hint
+text. A separate **附加信息** section contains SOC, voltage, current,
+temperature, charge state and cycle count. That telemetry never influences the
+health value.
 
 ## Coverage
 
@@ -294,7 +298,9 @@ same either way.
 
 Voltage / current / temperature / cycle count are printed only with `--extra`
 (and in the WebUI's separately labelled *附加信息（非 030103）* block). They never
-influence the health value.
+influence the health value. The kernel reports `POWER_SUPPLY_VOLTAGE_NOW` in
+microvolts and `POWER_SUPPLY_CURRENT_NOW` in microamperes; the module converts
+each to millivolts and milliamperes for display.
 
 The WebUI, the local web server and the action button are delivery
 mechanisms; they do not read or transform the battery value.
